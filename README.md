@@ -10,8 +10,8 @@ Um den Service lokal aufzusetzen müssen folgende Schritte durchgeführt werden:
 * Projekt initialisieren: Mit einem Terminal in den Projektordner navigieren und den Befehl: `npm init -y` und `npm install express sqlite3` ausführen.
 * Server starten: In dem Projektordner `node main.js` ausführen.
 
-Der Service wurde unter der Verwendung von Node.js **v20.11.1** und npm **10.4.0** entwickelt.
-Als Datenbank für **"sqlite3": "^5.1.7"** und **"express": "^4.19.2"** verwendet.    
+Der Service wurde unter der Verwendung von Node.js **v20.11.1** und npm **10.4.0** entwickelt.\
+Für die Datenbank wurde **"sqlite3": "^5.1.7"** und **"express": "^4.19.2"** verwendet.    
 
 # Endpunkte 
 
