@@ -5,6 +5,12 @@ const port = 3000;
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 const db = new sqlite3.Database('accesspoints.sqlite3');
 
 db.serialize(() => {
@@ -124,6 +130,7 @@ app.delete('/accesspoints/:id', (req, res) => {
 * @param id
 * @return on success 200 status
 * @return on error 500 status with error message
+* @return status 404 when accesspoint with id doesn't exist
 */
 app.put('/accesspoints/:id', (req, res) => {
     const id = req.params.id;
