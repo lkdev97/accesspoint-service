@@ -7,7 +7,7 @@ Das Repository enthält den Accespoint-Service. Der Service wurde entwickelt mit
 Um den Service lokal aufzusetzen müssen folgende Schritte durchgeführt werden:
 
 * Projekt klonen: In einem Terminal den Befehl: `git clone git@git.thm.de:lkhl72/accesspoint-service.git` ausführen.
-* Projekt initialisieren: Mit einem Terminal in den Projektordner navigieren und den Befehl: `npm init -y` und `npm install express sqlite3` ausführen.
+* Projekt initialisieren: Mit einem Terminal in den Projektordner navigieren und den Befehl: `npm init -y` und `npm install express sqlite3` ausführen. Um das Skript **synAccessPoints.js** nutzen zu können muss auch noch der Befehl `npm install axios` ausgeführt werden.
 * Server starten: In dem Projektordner `node main.js` ausführen.
 
 Der Service wurde unter der Verwendung von Node.js **v20.11.1** und npm **10.4.0** entwickelt.\
