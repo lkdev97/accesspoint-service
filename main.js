@@ -35,7 +35,7 @@ db.serialize(() => {
 *
 * @param id
 * @return accesspoint
-* @return status 404 when accesspoint with id doesn't exist
+* @return status 404 Not Found when accesspoint with id doesn't exist
 */
 app.get('/accesspoints/:id', (req, res) => {
     const id = req.params.id;
@@ -57,14 +57,17 @@ app.get('/accesspoints/:id', (req, res) => {
 * example with curl:
 * curl -X POST http://localhost:{$port}/accesspoints -H "Content-Type: application/json" -d "{\"ssid\":\"MoCaPos\",\"bssid\":\"bc:f2:af:ed:51:ef\",\"lat\":50.586996697117726,\"lng\":8.681672803676502,\"floor\":1,\"description\":\"Hinter dem Monitor\",\"building\":\"A20\"}"
 *
-* @return on success 201 status and id
+* @return on success 201 Created status and id
 * @return on error 500 status with error message
-* @return status 404 when accesspoint with bssid already exist
+* @return status 409 Conflict when accesspoint with bssid already exist
 */
 app.post('/accesspoints', (req, res) => {
     db.get('SELECT * FROM accesspoints WHERE bssid = ?', [req.body.bssid], (err, row) => { 
+        if (err) {
+            return res.status(500).send(err.message);
+        }
         if (row) {
-            return res.status(404).send(`Accesspoint with ${req.body.bssid} already exists`);
+            return res.status(409).send(`Accesspoint with bssid: ${req.body.bssid} already exists`);
         }
         const { ssid, bssid, lat, lng, floor, description, building } = req.body;
         const stmt = db.prepare('INSERT INTO accesspoints (ssid, bssid, lat, lng, floor, description, building) VALUES (?, ?, ?, ?, ?, ?, ?)');
@@ -85,6 +88,7 @@ app.post('/accesspoints', (req, res) => {
 * example with curl:
 * curl -X GET localhost:3000/accesspoints
 *
+* @return on error 500 status with error message
 * @return accesspoints
 */
 app.get('/accesspoints', (req, res) => {
@@ -104,7 +108,7 @@ app.get('/accesspoints', (req, res) => {
 * curl -X DELETE localhost:3000/accesspoints/3
 *
 * @param id
-* @return on success 200 status
+* @return on success 204 No Content status
 * @return on error 500 status with error message
 * @return status 404 when accesspoint with id doesn't exist
 */
@@ -121,7 +125,7 @@ app.delete('/accesspoints/:id', (req, res) => {
             if (err) {
                 return res.status(500).send(err.message);
             }
-            res.status(200).send(`Accesspoint with id ${id} deleted successfully`);
+            res.status(204).send();
         });
     });
 });
@@ -134,9 +138,9 @@ app.delete('/accesspoints/:id', (req, res) => {
 * curl -X PUT http://localhost:{$port}/accesspoints/3 -H "Content-Type: application/json" -d "{\"ssid\":\"MoCaPos\",\"bssid\":\"bc:f2:af:ed:51:ef\",\"lat\":50.586996697117726,\"lng\":8.681672803676502,\"floor\":2,\"description\":\"Hinter dem Monitor\",\"building\":\"A20\"}"
 *
 * @param id
-* @return on success 200 status
+* @return on success 200 OK status
 * @return on error 500 status with error message
-* @return status 404 when accesspoint with id doesn't exist
+* @return status 404 Not Found when accesspoint with id doesn't exist
 */
 app.put('/accesspoints/:id', (req, res) => {
     const id = req.params.id;
