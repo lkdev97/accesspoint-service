@@ -59,17 +59,23 @@ app.get('/accesspoints/:id', (req, res) => {
 *
 * @return on success 201 status and id
 * @return on error 500 status with error message
+* @return status 404 when accesspoint with bssid already exist
 */
 app.post('/accesspoints', (req, res) => {
-    const { ssid, bssid, lat, lng, floor, description, building } = req.body;
-    const stmt = db.prepare('INSERT INTO accesspoints (ssid, bssid, lat, lng, floor, description, building) VALUES (?, ?, ?, ?, ?, ?, ?)');
-    stmt.run([ssid, bssid, lat, lng, floor, description, building], function(err) {
-        if (err) {
-            return res.status(500).send(err.message);
+    db.get('SELECT * FROM accesspoints WHERE bssid = ?', [req.body.bssid], (err, row) => { 
+        if (row) {
+            return res.status(404).send(`Accesspoint with ${req.body.bssid} already exists`);
         }
-        res.status(201).json(`Accesspoint added with id: ${this.lastID} `);
+        const { ssid, bssid, lat, lng, floor, description, building } = req.body;
+        const stmt = db.prepare('INSERT INTO accesspoints (ssid, bssid, lat, lng, floor, description, building) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        stmt.run([ssid, bssid, lat, lng, floor, description, building], function(err) {
+            if (err) {
+                return res.status(500).send(err.message);
+            }
+            res.status(201).json(`Accesspoint added with id: ${this.lastID} `);
+        });
+        stmt.finalize();
     });
-    stmt.finalize();
 });
 
 /**
